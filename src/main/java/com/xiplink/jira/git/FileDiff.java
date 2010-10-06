@@ -58,7 +58,7 @@ public class FileDiff {
 		switch (nTree) {
 		case 1:
 			while (walk.next()) {
-				final FileDiff d = new FileDiff(commit, walk.getPathString());
+				final FileDiff d = new FileDiff(commit, walk.getPathString(), r.size());
 				d.change = "A";
 				d.blobs = new ObjectId[] { walk.getObjectId(0) };
 				r.add(d);
@@ -66,7 +66,7 @@ public class FileDiff {
 			break;
 		case 2:
 			while (walk.next()) {
-				final FileDiff d = new FileDiff(commit, walk.getPathString());
+				final FileDiff d = new FileDiff(commit, walk.getPathString(), r.size());
 				final ObjectId id0 = walk.getObjectId(0);
 				final ObjectId id1 = walk.getObjectId(1);
 				d.change = "M";
@@ -88,7 +88,7 @@ public class FileDiff {
 				if (matchAnyParent(walk, myTree))
 					continue;
 
-				final FileDiff d = new FileDiff(commit, walk.getPathString());
+				final FileDiff d = new FileDiff(commit, walk.getPathString(), r.size());
 				int m0 = 0;
 				for (int i = 0; i < myTree; i++)
 					m0 |= walk.getRawMode(i);
@@ -136,8 +136,11 @@ public class FileDiff {
 
 	public ObjectId[] blobs;
 
-	FileDiff(final RevCommit c, final String p) {
+	public int index;
+
+	FileDiff(final RevCommit c, final String p, int i) {
 		commit = c;
 		path = p;
+		index = i;
 	}
 }

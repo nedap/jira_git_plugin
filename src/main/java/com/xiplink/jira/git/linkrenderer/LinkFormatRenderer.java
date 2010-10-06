@@ -12,7 +12,7 @@ import com.xiplink.jira.git.ViewLinkFormat;
 /**
  * A link renderer implementation which lets the user specify the format in the properties file, to accommodate various
  * formats (ViewCVS, Fisheye, etc) out there.
- * 
+ *
  * @author Chenggong Lu
  * @author Jeff Turner
  */
@@ -65,7 +65,7 @@ public class LinkFormatRenderer implements GitLinkRenderer {
 		// .getCopyPath()
 				, revisionNumber
 				// getPathLink(logEntryPath.getCopyPath()
-				, "");
+				, "", 0);
 	}
 
 	public String getRevisionLink(RevCommit revision) {
@@ -79,20 +79,20 @@ public class LinkFormatRenderer implements GitLinkRenderer {
 		String revisionNumber = revision.getId().name();
 
 		if (GitConstants.MODIFICATION.equals(changeType)) {
-			return linkPath(fileModifiedFormat, path.path, revisionNumber, "");
+			return linkPath(fileModifiedFormat, path.path, revisionNumber, "", 0);
 		} else if (GitConstants.ADDED.equals(changeType)) {
 			// TODO validate blob
 			String baseId = "";
 			if (path.blobs.length > 1) {
 				baseId = path.blobs[1].name();
 			}
-			return linkPath(fileAddedFormat, path.path, baseId, revisionNumber);
+			return linkPath(fileAddedFormat, path.path, revisionNumber, baseId, path.index);
 		} else if (GitConstants.REPLACED.equals(changeType)) {
-			return linkPath(fileReplacedFormat, path.path, revisionNumber, "");
+			return linkPath(fileReplacedFormat, path.path, revisionNumber, "", path.index);
 		} else if (GitConstants.DELETED.equals(changeType)) {
-			return linkPath(fileDeletedFormat, path.path, revisionNumber, "");
+			return linkPath(fileDeletedFormat, path.path, revisionNumber, "", path.index);
 		} else {
-			return linkPath(fileReplacedFormat, path.path, revisionNumber, "");
+			return linkPath(fileReplacedFormat, path.path, revisionNumber, "", path.index);
 		}
 	}
 
@@ -110,7 +110,7 @@ public class LinkFormatRenderer implements GitLinkRenderer {
 
 	}
 
-	private String linkPath(final String format, String path, String revisionNumber, String base) {
+	private String linkPath(final String format, String path, String revisionNumber, String base, int fileIndex) {
 		if (format != null) {
 
 			try {
@@ -120,6 +120,7 @@ public class LinkFormatRenderer implements GitLinkRenderer {
 				}
 				href = StringUtils.replaceAll(href, "${rev}", revisionNumber);
 				href = StringUtils.replaceAll(href, "${base}", base);
+				href = StringUtils.replaceAll(href, "${fileindex}", String.valueOf(fileIndex));
 
 				return "<a href=\"" + href + "\">" + path + "</a>";
 			} catch (Exception ex) {

@@ -15,7 +15,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jgit.revwalk.RevCommit;
 
-
 import com.atlassian.jira.plugin.issuetabpanel.AbstractIssueAction;
 import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanelModuleDescriptor;
 import com.atlassian.jira.util.JiraKeyUtils;
@@ -48,6 +47,7 @@ public class GitRevisionAction extends AbstractIssueAction {
         this.branch = branch;
 	}
 
+	@Override
 	protected void populateVelocityParams(Map params) {
 		params.put("git", this);
 	}
@@ -60,6 +60,7 @@ public class GitRevisionAction extends AbstractIssueAction {
 		return multipleGitRepositoryManager.getRepository(repoId).getDisplayName();
 	}
 
+	@Override
 	public Date getTimePerformed() {
 		return timePerformed;
 	}
@@ -79,6 +80,18 @@ public class GitRevisionAction extends AbstractIssueAction {
 
     public String getUsername() {
 		return revision.getAuthorIdent().getName();
+	}
+
+	public boolean getCommitterIsAuthor() {
+		return revision.getAuthorIdent().getName().equals(revision.getCommitterIdent().getName());
+	}
+
+	public String getAuthorName() {
+		return revision.getAuthorIdent().getName();
+	}
+
+	public String getCommitterName() {
+		return revision.getCommitterIdent().getName();
 	}
 
 	public RevCommit getRevision() {
@@ -108,7 +121,7 @@ public class GitRevisionAction extends AbstractIssueAction {
 	/**
 	 * Converts all lower case JIRA issue keys to upper case so that they can be
 	 * correctly rendered in the Velocity macro, makelinkedhtml.
-	 * 
+	 *
 	 * @param logMessageToBeRewritten
 	 *            The git log message to be rewritten.
 	 * @return The rewritten git log message.

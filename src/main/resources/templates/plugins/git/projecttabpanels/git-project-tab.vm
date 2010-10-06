@@ -107,7 +107,13 @@
                     <td bgcolor="#ffffff" width="10%" valign="top" rowspan="3">$commit.branch</td>
                     <td bgcolor="#ffffff" width="10%" valign="top" rowspan="3">$commit.linkRenderer.getRevisionLink($commit.revision)</td>
                     <td bgcolor="#ffffff" width="10%" valign="top" rowspan="3">$commit.timePerformedFormatted</td>
-                    <td bgcolor="#ffffff" width="10%" valign="top" rowspan="3">$!{commit.revision.authorIdent.name} / $!{commit.revision.committerIdent.name}</td>
+                    <td bgcolor="#ffffff" width="10%" valign="top" rowspan="3">
+						#if ($commit.committerIsAuthor)
+							$!{commit.authorName}
+						#else
+							$!{commit.authorName} / $!{git.committerName}
+						#end
+					</td>
                     <td bgcolor="#ffffff">#makelinkedhtml($commit.revision.getFullMessage().trim())</td>
                 </tr>
                 <tr>

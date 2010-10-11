@@ -111,7 +111,7 @@
 						#if ($commit.committerIsAuthor)
 							$!{commit.authorName}
 						#else
-							$!{commit.authorName} / $!{git.committerName}
+							$!{commit.authorName} / $!{commit.committerName}
 						#end
 					</td>
                     <td bgcolor="#ffffff">#makelinkedhtml($commit.revision.getFullMessage().trim())</td>
